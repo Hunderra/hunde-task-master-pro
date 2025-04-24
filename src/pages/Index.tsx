@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Project } from "@/types/project";
 import { initialData } from "@/data/initial-data";
@@ -308,13 +307,19 @@ const Index = () => {
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-3">Add New Sub-Project</h2>
             <div className="space-y-2">
-              <Select value={projectForNewSubProject} onValueChange={setProjectForNewSubProject}>
+              <Select 
+                value={projectForNewSubProject} 
+                onValueChange={setProjectForNewSubProject}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Parent Project" />
                 </SelectTrigger>
                 <SelectContent>
                   {data.map((project) => (
-                    <SelectItem key={project.project} value={project.project}>
+                    <SelectItem 
+                      key={project.project} 
+                      value={project.project || 'unnamed-project'}
+                    >
                       {project.project}
                     </SelectItem>
                   ))}
@@ -335,16 +340,22 @@ const Index = () => {
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-3">Add New Task</h2>
             <div className="space-y-2">
-              <Select value={projectForNewTodo} onValueChange={(value) => {
-                setProjectForNewTodo(value);
-                setSubProjectForNewTodo("");
-              }}>
+              <Select 
+                value={projectForNewTodo} 
+                onValueChange={(value) => {
+                  setProjectForNewTodo(value);
+                  setSubProjectForNewTodo("");
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Project" />
                 </SelectTrigger>
                 <SelectContent>
                   {data.map((project) => (
-                    <SelectItem key={project.project} value={project.project}>
+                    <SelectItem 
+                      key={project.project} 
+                      value={project.project || 'unnamed-project'}
+                    >
                       {project.project}
                     </SelectItem>
                   ))}
@@ -352,7 +363,10 @@ const Index = () => {
               </Select>
 
               {projectForNewTodo && data.find((p) => p.project === projectForNewTodo)?.subProjects.length > 0 && (
-                <Select value={subProjectForNewTodo} onValueChange={setSubProjectForNewTodo}>
+                <Select 
+                  value={subProjectForNewTodo} 
+                  onValueChange={setSubProjectForNewTodo}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Sub-Project (Optional)" />
                   </SelectTrigger>
@@ -361,7 +375,10 @@ const Index = () => {
                     {data
                       .find((p) => p.project === projectForNewTodo)
                       ?.subProjects.map((subProject) => (
-                        <SelectItem key={subProject.name} value={subProject.name}>
+                        <SelectItem 
+                          key={subProject.name} 
+                          value={subProject.name || 'unnamed-subproject'}
+                        >
                           {subProject.name}
                         </SelectItem>
                       ))}
