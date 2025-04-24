@@ -11,3 +11,9 @@ export interface Project {
   done: string[];
   subProjects: SubProject[];
 }
+
+export interface ProjectStat {
+  total: number;
+  active: number;
+  completed: number;
+}

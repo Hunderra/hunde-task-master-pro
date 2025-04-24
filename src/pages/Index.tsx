@@ -2,17 +2,8 @@ import React, { useState } from "react";
 import { Project } from "@/types/project";
 import { initialData } from "@/data/initial-data";
 import { ProjectCard } from "@/components/ProjectCard";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { Layout } from "@/components/Layout";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [data, setData] = useState<Project[]>(initialData);
@@ -286,240 +277,242 @@ const Index = () => {
   };
 
   return (
-    <div className="container max-w-6xl py-6 space-y-6">
-      <header className="text-center">
-        <h1 className="text-3xl font-bold text-blue-800 mb-2">
-          Hunde's Project Tracker
-        </h1>
-        <p className="text-gray-600">Manage your projects and tasks efficiently</p>
-      </header>
+    <Layout>
+      <div className="space-y-6">
+        <header className="text-center">
+          <h1 className="text-3xl font-bold text-blue-800 mb-2">
+            Hunde's Project Tracker
+          </h1>
+          <p className="text-gray-600">Manage your projects and tasks efficiently</p>
+        </header>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="p-4">
-          <h2 className="text-lg font-semibold mb-3">Add New Project</h2>
-          <div className="flex gap-2">
-            <Input
-              value={newProject}
-              onChange={(e) => setNewProject(e.target.value)}
-              placeholder="Project name"
-              onKeyPress={(e) => e.key === "Enter" && addProject()}
-            />
-            <Button onClick={addProject}>Add</Button>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <h2 className="text-lg font-semibold mb-3">Add New Sub-Project</h2>
-          <div className="space-y-2">
-            <Select value={projectForNewSubProject} onValueChange={setProjectForNewSubProject}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Parent Project" />
-              </SelectTrigger>
-              <SelectContent>
-                {data.map((project) => (
-                  <SelectItem key={project.project} value={project.project}>
-                    {project.project}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="p-4">
+            <h2 className="text-lg font-semibold mb-3">Add New Project</h2>
             <div className="flex gap-2">
               <Input
-                value={newSubProject}
-                onChange={(e) => setNewSubProject(e.target.value)}
-                placeholder="Sub-project name"
-                onKeyPress={(e) => e.key === "Enter" && addSubProject()}
+                value={newProject}
+                onChange={(e) => setNewProject(e.target.value)}
+                placeholder="Project name"
+                onKeyPress={(e) => e.key === "Enter" && addProject()}
               />
-              <Button onClick={addSubProject}>Add</Button>
+              <Button onClick={addProject}>Add</Button>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        <Card className="p-4">
-          <h2 className="text-lg font-semibold mb-3">Add New Task</h2>
-          <div className="space-y-2">
-            <Select value={projectForNewTodo} onValueChange={(value) => {
-              setProjectForNewTodo(value);
-              setSubProjectForNewTodo("");
-            }}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Project" />
-              </SelectTrigger>
-              <SelectContent>
-                {data.map((project) => (
-                  <SelectItem key={project.project} value={project.project}>
-                    {project.project}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {projectForNewTodo && data.find((p) => p.project === projectForNewTodo)?.subProjects.length > 0 && (
-              <Select value={subProjectForNewTodo} onValueChange={setSubProjectForNewTodo}>
+          <Card className="p-4">
+            <h2 className="text-lg font-semibold mb-3">Add New Sub-Project</h2>
+            <div className="space-y-2">
+              <Select value={projectForNewSubProject} onValueChange={setProjectForNewSubProject}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Sub-Project (Optional)" />
+                  <SelectValue placeholder="Select Parent Project" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Main Project</SelectItem>
-                  {data
-                    .find((p) => p.project === projectForNewTodo)
-                    ?.subProjects.map((subProject) => (
-                      <SelectItem key={subProject.name} value={subProject.name}>
-                        {subProject.name}
-                      </SelectItem>
-                    ))}
+                  {data.map((project) => (
+                    <SelectItem key={project.project} value={project.project}>
+                      {project.project}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-            )}
-
-            <div className="flex gap-2">
-              <Input
-                value={newTodo}
-                onChange={(e) => setNewTodo(e.target.value)}
-                placeholder="New task"
-                onKeyPress={(e) => e.key === "Enter" && addTodo()}
-              />
-              <Button onClick={addTodo}>Add</Button>
+              <div className="flex gap-2">
+                <Input
+                  value={newSubProject}
+                  onChange={(e) => setNewSubProject(e.target.value)}
+                  placeholder="Sub-project name"
+                  onKeyPress={(e) => e.key === "Enter" && addSubProject()}
+                />
+                <Button onClick={addSubProject}>Add</Button>
+              </div>
             </div>
-          </div>
-        </Card>
-      </div>
+          </Card>
 
-      <div className="flex justify-center">
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setShowAllTodos(!showAllTodos)}
-          className="w-full max-w-md"
-        >
-          {showAllTodos ? "Hide" : "Show"} All Open Tasks (
-          {data.reduce(
-            (count, project) =>
-              count +
-              project.todo.length +
-              project.subProjects.reduce(
-                (subCount, sub) => subCount + sub.todo.length,
-                0
-              ),
-            0
-          )}
-          )
-        </Button>
-      </div>
-
-      {showAllTodos && (
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">All Open Tasks</h2>
-          <div className="space-y-4">
-            {data.map((project, projectIndex) => (
-              <React.Fragment key={`all-todos-${projectIndex}`}>
-                {(project.todo.length > 0 ||
-                  project.subProjects.some((sub) => sub.todo.length > 0)) && (
-                  <div className="border-b pb-4">
-                    <h3 className="font-medium text-lg text-blue-700 mb-2">
+          <Card className="p-4">
+            <h2 className="text-lg font-semibold mb-3">Add New Task</h2>
+            <div className="space-y-2">
+              <Select value={projectForNewTodo} onValueChange={(value) => {
+                setProjectForNewTodo(value);
+                setSubProjectForNewTodo("");
+              }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Project" />
+                </SelectTrigger>
+                <SelectContent>
+                  {data.map((project) => (
+                    <SelectItem key={project.project} value={project.project}>
                       {project.project}
-                    </h3>
-                    <ul className="space-y-2 ml-4">
-                      {project.todo.map((item, todoIndex) => (
-                        <li
-                          key={`main-${todoIndex}`}
-                          className="flex items-center justify-between group"
-                        >
-                          <span>{item}</span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => markAsDone(projectIndex, todoIndex)}
-                            className="opacity-0 group-hover:opacity-100"
-                          >
-                            Complete
-                          </Button>
-                        </li>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {projectForNewTodo && data.find((p) => p.project === projectForNewTodo)?.subProjects.length > 0 && (
+                <Select value={subProjectForNewTodo} onValueChange={setSubProjectForNewTodo}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Sub-Project (Optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Main Project</SelectItem>
+                    {data
+                      .find((p) => p.project === projectForNewTodo)
+                      ?.subProjects.map((subProject) => (
+                        <SelectItem key={subProject.name} value={subProject.name}>
+                          {subProject.name}
+                        </SelectItem>
                       ))}
-                      {project.subProjects.map(
-                        (subProject, subProjectIndex) =>
-                          subProject.todo.length > 0 && (
-                            <div key={`sub-${subProjectIndex}`} className="ml-4">
-                              <h4 className="font-medium text-blue-600 mb-1">
-                                {subProject.name}
-                              </h4>
-                              <ul className="space-y-2">
-                                {subProject.todo.map((item, todoIndex) => (
-                                  <li
-                                    key={`sub-todo-${todoIndex}`}
-                                    className="flex items-center justify-between group"
-                                  >
-                                    <span>{item}</span>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      onClick={() =>
-                                        markAsDone(
-                                          projectIndex,
-                                          todoIndex,
-                                          subProjectIndex
-                                        )
-                                      }
-                                      className="opacity-0 group-hover:opacity-100"
-                                    >
-                                      Complete
-                                    </Button>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )
-                      )}
-                    </ul>
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </Card>
-      )}
+                  </SelectContent>
+                </Select>
+              )}
 
-      <div className="space-y-6">
-        {data.map((project, projectIndex) => (
-          <ProjectCard
-            key={projectIndex}
-            project={project}
-            projectIndex={projectIndex}
-            editingItem={editingItem}
-            onEdit={startEditing}
-            onSaveEdit={saveEdit}
-            onUpdateEditValue={(value) =>
-              setEditingItem({ ...editingItem, value })
-            }
-            onMarkDone={markAsDone}
-            onMarkTodo={markAsTodo}
-            onDeleteTodo={deleteTodo}
-            onDeleteDone={deleteDone}
-            onDeleteProject={deleteProject}
-            onDeleteSubProject={deleteSubProject}
-          />
-        ))}
-      </div>
+              <div className="flex gap-2">
+                <Input
+                  value={newTodo}
+                  onChange={(e) => setNewTodo(e.target.value)}
+                  placeholder="New task"
+                  onKeyPress={(e) => e.key === "Enter" && addTodo()}
+                />
+                <Button onClick={addTodo}>Add</Button>
+              </div>
+            </div>
+          </Card>
+        </div>
 
-      <Card className="p-4">
-        <h2 className="text-lg font-semibold mb-3">Export Data</h2>
-        <div className="flex gap-2">
-          <Select value={exportFormat} onValueChange={setExportFormat}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select format" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="markdown">Markdown</SelectItem>
-              <SelectItem value="csv">CSV</SelectItem>
-              <SelectItem value="json">JSON</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={exportData} variant="outline">
-            Export
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => setShowAllTodos(!showAllTodos)}
+            className="w-full max-w-md"
+          >
+            {showAllTodos ? "Hide" : "Show"} All Open Tasks (
+            {data.reduce(
+              (count, project) =>
+                count +
+                project.todo.length +
+                project.subProjects.reduce(
+                  (subCount, sub) => subCount + sub.todo.length,
+                  0
+                ),
+              0
+            )}
+            )
           </Button>
         </div>
-      </Card>
-    </div>
+
+        {showAllTodos && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">All Open Tasks</h2>
+            <div className="space-y-4">
+              {data.map((project, projectIndex) => (
+                <React.Fragment key={`all-todos-${projectIndex}`}>
+                  {(project.todo.length > 0 ||
+                    project.subProjects.some((sub) => sub.todo.length > 0)) && (
+                    <div className="border-b pb-4">
+                      <h3 className="font-medium text-lg text-blue-700 mb-2">
+                        {project.project}
+                      </h3>
+                      <ul className="space-y-2 ml-4">
+                        {project.todo.map((item, todoIndex) => (
+                          <li
+                            key={`main-${todoIndex}`}
+                            className="flex items-center justify-between group"
+                          >
+                            <span>{item}</span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => markAsDone(projectIndex, todoIndex)}
+                              className="opacity-0 group-hover:opacity-100"
+                            >
+                              Complete
+                            </Button>
+                          </li>
+                        ))}
+                        {project.subProjects.map(
+                          (subProject, subProjectIndex) =>
+                            subProject.todo.length > 0 && (
+                              <div key={`sub-${subProjectIndex}`} className="ml-4">
+                                <h4 className="font-medium text-blue-600 mb-1">
+                                  {subProject.name}
+                                </h4>
+                                <ul className="space-y-2">
+                                  {subProject.todo.map((item, todoIndex) => (
+                                    <li
+                                      key={`sub-todo-${todoIndex}`}
+                                      className="flex items-center justify-between group"
+                                    >
+                                      <span>{item}</span>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() =>
+                                          markAsDone(
+                                            projectIndex,
+                                            todoIndex,
+                                            subProjectIndex
+                                          )
+                                        }
+                                        className="opacity-0 group-hover:opacity-100"
+                                      >
+                                        Complete
+                                      </Button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        <div className="space-y-6">
+          {data.map((project, projectIndex) => (
+            <ProjectCard
+              key={projectIndex}
+              project={project}
+              projectIndex={projectIndex}
+              editingItem={editingItem}
+              onEdit={startEditing}
+              onSaveEdit={saveEdit}
+              onUpdateEditValue={(value) =>
+                setEditingItem({ ...editingItem, value })
+              }
+              onMarkDone={markAsDone}
+              onMarkTodo={markAsTodo}
+              onDeleteTodo={deleteTodo}
+              onDeleteDone={deleteDone}
+              onDeleteProject={deleteProject}
+              onDeleteSubProject={deleteSubProject}
+            />
+          ))}
+        </div>
+
+        <Card className="p-4">
+          <h2 className="text-lg font-semibold mb-3">Export Data</h2>
+          <div className="flex gap-2">
+            <Select value={exportFormat} onValueChange={setExportFormat}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select format" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="markdown">Markdown</SelectItem>
+                <SelectItem value="csv">CSV</SelectItem>
+                <SelectItem value="json">JSON</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={exportData} variant="outline">
+              Export
+            </Button>
+          </div>
+        </Card>
+      </div>
+    </Layout>
   );
 };
 
