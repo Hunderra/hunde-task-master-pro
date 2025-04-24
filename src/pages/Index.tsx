@@ -371,7 +371,7 @@ const Index = () => {
                     <SelectValue placeholder="Select Sub-Project (Optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Main Project</SelectItem>
+                    <SelectItem value="main-project">Main Project</SelectItem>
                     {data
                       .find((p) => p.project === projectForNewTodo)
                       ?.subProjects.map((subProject) => (
