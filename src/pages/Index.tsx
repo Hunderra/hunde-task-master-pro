@@ -1,9 +1,14 @@
+
 import React, { useState } from "react";
 import { Project } from "@/types/project";
 import { initialData } from "@/data/initial-data";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Layout } from "@/components/Layout";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Index = () => {
   const [data, setData] = useState<Project[]>(initialData);
